@@ -365,8 +365,7 @@ void WarmupManagerS3Impl::TravelChunk(fuse_ino_t ino,
     uint64_t blockSize = s3Adaptor_->GetBlockSize();
     uint64_t chunkSize = s3Adaptor_->GetChunkSize();
     uint64_t offset, len, chunkid, compaction;
-    for (size_t i = 0; i < chunkInfo.s3chunks_size(); i++) {
-        auto const &chunkinfo = chunkInfo.s3chunks(i);
+    for (const auto &chunkinfo : chunkInfo.s3chunks()) {
         auto fsId = fsInfo_->fsid();
         chunkid = chunkinfo.chunkid();
         compaction = chunkinfo.compaction();
@@ -374,8 +373,6 @@ void WarmupManagerS3Impl::TravelChunk(fuse_ino_t ino,
         len = chunkinfo.len();
         // the offset in the chunk
         uint64_t chunkPos = offset % chunkSize;
-        // the offset in the block
-        uint64_t blockPos = chunkPos % blockSize;
         // the first blockIndex
         uint64_t blockIndexBegin = chunkPos / blockSize;
 
@@ -465,6 +462,7 @@ void WarmupManagerS3Impl::WarmUpAllObjs(
     GetObjectAsyncCallBack cb =
         [&](const S3Adapter *adapter,
             const std::shared_ptr<GetObjectAsyncContext> &context) {
+            (void)adapter;
             if (bgFetchStop_.load(std::memory_order_acquire)) {
                 VLOG(9) << "need stop warmup";
                 cond.Signal();

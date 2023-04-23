@@ -194,7 +194,6 @@ TEST_F(TestDiskCacheWrite, ReadFile) {
 }
 
 TEST_F(TestDiskCacheWrite, UploadFile) {
-    uint64_t length = 10;
     EXPECT_CALL(*wrapper_, stat(NotNull(), NotNull()))
         .WillOnce(Return(-1));
     std::string fileName = "test";
@@ -458,7 +457,7 @@ TEST_F(TestDiskCacheWrite, AsyncUploadRun) {
     }));
     diskCacheWrite_->AsyncUploadEnqueue("test");
     diskCacheWrite_->AsyncUploadEnqueue("test");
-    int ret = diskCacheWrite_->AsyncUploadRun();
+    (void)diskCacheWrite_->AsyncUploadRun();
     sleep(1);
     diskCacheWrite_->AsyncUploadEnqueue("test");
     std::string t1 = "test";

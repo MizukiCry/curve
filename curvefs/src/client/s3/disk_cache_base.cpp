@@ -43,7 +43,6 @@ void DiskCacheBase::Init(std::shared_ptr<PosixWrapper> wrapper,
 }
 
 int DiskCacheBase::CreateIoDir(bool writreDir) {
-    struct stat statFile;
     bool ret;
     std::string FullDirPath;
 

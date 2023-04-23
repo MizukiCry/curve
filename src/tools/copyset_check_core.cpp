@@ -404,7 +404,7 @@ int CopysetCheckCore::CheckCopysetsOnServer(const ServerIdType& serverId,
     std::vector<Thread> threadpool;
     std::map<std::string, std::pair<int, butil::IOBuf>> queryCsResult;
     uint32_t index = 0;
-    for (int i = 0; i < FLAGS_rpcConcurrentNum; i++) {
+    for (int i = 0; i < static_cast<int>(FLAGS_rpcConcurrentNum); i++) {
         threadpool.emplace_back(Thread(
                         &CopysetCheckCore::ConcurrentCheckCopysetsOnServer,
                         this, std::ref(chunkservers), &index,
@@ -751,7 +751,7 @@ CheckResult CopysetCheckCore::CheckPeerOnlineStatus(
     }
     if (notOnlineNum > 0) {
         uint32_t majority = peers.size() / 2 + 1;
-        if (notOnlineNum < majority) {
+        if (notOnlineNum < static_cast<int>(majority)) {
             return CheckResult::kMinorityPeerNotOnline;
         } else {
             return CheckResult::kMajorityPeerNotOnline;
@@ -928,6 +928,7 @@ int CopysetCheckCore::ListMayBrokenVolumes(
 
 void CopysetCheckCore::GetCopysetInfos(const char* key,
                                 std::vector<CopysetInfo>* copysets) {
+    (void)key;
     for (auto iter = copysets_[kMajorityPeerNotOnline].begin();
                     iter != copysets_[kMajorityPeerNotOnline].end(); ++iter) {
         std::string gid = *iter;
